@@ -22,7 +22,7 @@ export function handleSocket(io) {
     }
     jwt.verify(
       socket.handshake.auth.token,
-      process.enb.JWT_SECRET,
+      process.env.JWT_SECRET,
       async (err, decodedToken) => {
         if (err) {
           return next(new Error('Authentication failed: invalid token'))

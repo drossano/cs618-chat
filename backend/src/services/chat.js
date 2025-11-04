@@ -28,7 +28,7 @@ export async function joinRoom(io, socket, { room }) {
   )
 }
 
-export async function getUserInfoById(io, socketId) {
+export async function getUserInfoBySocketId(io, socketId) {
   const sockets = await io.in(socketId).fetchSockets()
   if (sockets.length === 0) return null
   const socket = sockets[0]

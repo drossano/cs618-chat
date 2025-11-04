@@ -11,16 +11,25 @@ export function useChat() {
     socket.on('chat.message', receiveMessage)
     return () => socket.off('chat.message', receiveMessage)
   }, [])
+
+  function clearMessages() {
+    setMessages([])
+  }
+
+  async function getRooms() {
+    const userInfo = await socket.emitWithAck('user.info', socket.id)
+    const rooms = userInfo.rooms.filter((room) => room !== socket.id)
+    return rooms
+  }
   async function sendMessage(message) {
     if (message.startsWith('/')) {
       const command = message.substring(1)
       switch (command) {
         case 'clear':
-          setMessages([])
+          clearMessages()
           break
         case 'rooms': {
-          const userInfo = await socket.emitWithAck('user.info', socket.id)
-          const rooms = userInfo.rooms.filter((room) => room !== socket.id)
+          const rooms = await getRooms()
           receiveMessage({
             message: `You are in: ${rooms.join(',')}`,
           })
@@ -33,7 +42,7 @@ export function useChat() {
           break
       }
     } else {
-      socket.emit('chat.message', message)
+      socket.emit('chat.message', 'public', message)
     }
   }
   return { messages, sendMessage }
