@@ -10,7 +10,7 @@ export function handleSocket(io) {
     console.log(socket.id, 'joined room:', room)
     const messages = await getMessagesByRoom(room)
     messages.forEach(({ username, message }) =>
-      socket.emit('chat.message', { username, message }),
+      socket.emit('chat.message', { username, message, replayed: true }),
     )
 
     socket.on('disconnect', () => {
